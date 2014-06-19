@@ -32,7 +32,7 @@ Interface
   Function startNewGame(boardMines, boardRows, boardCols: Integer): BoardStatusType;
 
 Implementation
-  Uses Crt, Keyboard, Math;
+  Uses Crt, Math;
 
   Function generateMinesBoard(boardConfig: BoardConfigType): BoardType;
     Var

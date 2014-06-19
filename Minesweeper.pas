@@ -1,5 +1,5 @@
 Program Minesweeper;
-Uses MinesweeperUnit in 'MinesweeperUnit.pas', Crt, Keyboard;
+Uses MinesweeperUnit in 'MinesweeperUnit.pas', Crt;
 Var
   boardStatus: BoardStatusType;
   answer: Char;
