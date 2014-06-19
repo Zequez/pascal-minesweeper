@@ -16,6 +16,10 @@ I could have used more structures, but I didn't realize until after being knee-d
 * Set flags with F key
 * Activate tile with SPACE key
 
+### Issues
+
+I'm pretty sure the algorithm to check for adjacent tiles is aberrantly inneficient, because if I set the minefield to 23x179, I get a runtime error
+
 ### Licence
 
 WTFPL

@@ -10,9 +10,10 @@ Begin
     writeln('1. Easy / 10 mines / 9x9 grid');
     writeln('2. Intermediate / 40 mines / 16x16 grid');
     writeln('3. Advanced / 99 mines / 16x30 grid');
+    writeln('4. Deity / 250 mines / 20x70 grid');
     repeat
       readln(answer);
-    until answer in ['1'..'3'];
+    until answer in ['1'..'4'];
 
     clrScr;
 
@@ -20,6 +21,7 @@ Begin
       '1': boardStatus := startNewGame(10, 9, 9);
       '2': boardStatus := startNewGame(40, 16, 16);
       '3': boardStatus := startNewGame(99, 16, 30);
+      '4': boardStatus := startNewGame(250, 20, 70);
     end;
 
     if boardStatus = won then 
