@@ -15,13 +15,13 @@ Interface
       rows, cols, mines: Integer;
     End;
 
-  Function generateMinesBoard(boardConfig: BoardConfigType): BoardType;
+  Function generateMinesBoard(boardConfig: BoardConfigType; reservedTiles: SiblingsCoordinatesType; reservedTilesLength: Integer): BoardType;
   Function generatePlayerBoard(boardConfig: BoardConfigType): BoardType;
   Function minesAround(x: Integer; y: Integer; minesBoard: BoardType; boardConfig: BoardConfigType): Integer;
   Procedure drawTile(x: Integer; y: Integer; tileType: TileStateType; minesBoard: BoardType; boardConfig: BoardConfigType);
   Procedure drawTile(x: Integer; y: Integer; tileType: TileStateType; minesBoard: BoardType; boardConfig: BoardConfigType; startX, startY: Integer);
   Procedure drawBoard(playerBoard: BoardType; minesBoard: BoardType; boardConfig: BoardConfigType; startX, startY: Integer);
-  Function toggleFlag(x: Integer; y: Integer; playerBoard: BoardType; minesBoard: BoardType; boardConfig: BoardConfigType): BoardType;
+  Function toggleFlag(x: Integer; y: Integer; playerBoard: BoardType; boardConfig: BoardConfigType): BoardType;
   Function pushCoordinates(x, y: Integer; var arr: SiblingsCoordinatesType; count: Integer): Integer;
   Function getSiblingTiles(x, y: Integer; cols: Integer; rows: Integer; var count: Integer): SiblingsCoordinatesType;
   Function activateSiblingTiles(siblingTiles: SiblingsCoordinatesType; siblingTilesLength: Integer; playerBoard, minesBoard: BoardType; boardConfig: BoardConfigType): BoardType;
@@ -34,11 +34,12 @@ Interface
 Implementation
   Uses Crt, Math;
 
-  Function generateMinesBoard(boardConfig: BoardConfigType): BoardType;
+  Function generateMinesBoard(boardConfig: BoardConfigType; reservedTiles: SiblingsCoordinatesType; reservedTilesLength: Integer): BoardType;
     Var
       board: BoardType;
       i, j: Integer;
       mineX, mineY: Integer;
+      allowed: Boolean;
     Begin
       for i := 1 to boardConfig.cols do begin
         for j := 1 to boardConfig.rows do begin
@@ -47,10 +48,17 @@ Implementation
       end;
 
       for i := 1 to boardConfig.mines do begin
+        allowed := false;
         repeat
           mineX := floor(boardConfig.cols*random+1);
           mineY := floor(boardConfig.rows*random+1);
-        until board[mineX, mineY] <> tileMine;
+          allowed := board[mineX, mineY] <> tileMine;
+          for j := 1 to reservedTilesLength do begin 
+            if (mineX = reservedTiles[j, 1]) and (mineY = reservedTiles[j, 2]) then begin
+              allowed := false;
+            end;
+          end;
+        until allowed;
         board[mineX, mineY] := tileMine;
       end;
 
@@ -170,16 +178,17 @@ Implementation
   Function toggleFlag(x: Integer;
                       y: Integer;
                       playerBoard: BoardType;
-                      minesBoard: BoardType;
                       boardConfig: BoardConfigType
                      ): BoardType;
+    Var
+      mockMinesBoard: BoardType;
     Begin
       if playerBoard[x, y] = tileFlag then
         playerBoard[x, y] := tileHidden
       else if playerBoard[x, y] = tileHidden then
         playerBoard[x, y] := tileFlag;
 
-      drawTile(x, y, playerBoard[x, y], minesBoard, boardConfig);
+      drawTile(x, y, playerBoard[x, y], mockMinesBoard, boardConfig);
 
       toggleFlag := playerBoard;
     End;
@@ -381,15 +390,20 @@ Implementation
       cursorX, cursorY: Integer;
       boardStatus: BoardStatusType;
       boardConfig: BoardConfigType;
+      reservedTiles: SiblingsCoordinatesType;
+      reservedTilesLength: Integer;
+      firstMove: Boolean;
     Begin
       boardConfig.mines := boardMines;
       boardConfig.rows := boardRows;
       boardConfig.cols := boardCols;
 
-      minesBoard := generateMinesBoard(boardConfig);
+      firstMove := true;
+
+
       playerBoard := generatePlayerBoard(boardConfig);
-      drawBoard(playerBoard, minesBoard, boardConfig, 0, 0);
-      // drawBoard(minesBoard, minesBoard, boardConfig, boardConfig.cols, 0);
+      drawBoard(playerBoard, minesBoard, boardConfig, 0, 0); {minesBoard not used because playerBoard is all hidden, so it's safe}
+      // drawBoard(minesBoard, minesBoard, boardConfig, boardConfig.cols, 0); {For debugging}
       boardStatus := playing;
     
       cursorX := 1;
@@ -403,8 +417,15 @@ Implementation
           #77 : if cursorX < boardConfig.cols then inc(cursorX); {Right}
           #72 : if cursorY > 1                then dec(cursorY); {Up}
           #80 : if cursorY < boardConfig.rows then inc(cursorY); {Down}
-          'f': playerBoard := toggleFlag(cursorX, cursorY, playerBoard, minesBoard, boardConfig);
-          ' ': playerBoard := activateTile(cursorX, cursorY, playerBoard, minesBoard, boardConfig);
+          'f': playerBoard := toggleFlag(cursorX, cursorY, playerBoard, boardConfig);
+          ' ': begin
+            if firstMove then begin
+              reservedTiles := getSiblingTiles(cursorX, cursorY, boardConfig.cols, boardConfig.rows, reservedTilesLength);
+              minesBoard := generateMinesBoard(boardConfig, reservedTiles, reservedTilesLength);
+              firstMove := false;
+            end;
+            playerBoard := activateTile(cursorX, cursorY, playerBoard, minesBoard, boardConfig);
+          end;
         end;
 
         boardStatus := getBoardStatus(playerBoard, minesBoard, boardConfig);
