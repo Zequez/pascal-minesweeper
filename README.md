@@ -27,7 +27,7 @@ I could have used more structures, but I didn't realize until after being knee-d
 * Memory leaks! Overflows of many kinds!
 * Retro 8-bit console pixel-art gameplay!
 * Buzzwords!
-* Configurable style! Just click on the console `window > Propreties > Font` and change the font size!
+* Configurable style! Just right-click on the console window `Properties > Font` and change the font size!
 
 ### Licence
 
