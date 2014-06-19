@@ -12,13 +12,22 @@ I could have used more structures, but I didn't realize until after being knee-d
 
 ### Instructions
 
-* Move with arrow keys
-* Set flags with F key
-* Activate tile with SPACE key
+* Move with `ARROW` keys
+* Set flags with `F` key
+* Activate tile with `SPACE` key
+* Quit the current minefield with `Q`
 
-### Issues
+### Features
 
-I'm pretty sure the algorithm to check for adjacent tiles is aberrantly inneficient, because if I set the minefield to 23x179, I get a runtime error
+* 4 levels of difficulty!
+* You can set flags!
+* Colors!
+* It displays all the mines when you lose!
+* Satisfying start! Because it makes sure all the tiles are clear on the first try!
+* Memory leaks! Overflows of many kinds!
+* Retro 8-bit console pixel-art gameplay!
+* Buzzwords!
+* Configurable style! Just click on the console `window > Propreties > Font` and change the font size!
 
 ### Licence
 
