@@ -1,41 +1,40 @@
 Program Minesweeper;
 Uses MinesweeperUnit in 'MinesweeperUnit.pas', Crt, Keyboard;
 Var
-  minesBoard, playerBoard: BoardType;
-  i, j: Integer;
-  key: Char;
-  cursorX, cursorY: Byte;
   boardStatus: BoardStatusType;
+  answer: Char;
 Begin
   randomize;
   CursorBig;
 
-  minesBoard := generateMinesBoard;
-  playerBoard := generatePlayerBoard;
-  drawBoard(playerBoard, minesBoard);
-
-  cursorX := 1;
-  cursorY := 1;
   repeat
-    gotoXY(cursorX, cursorY);
-    key := readKey;
+    writeln('1. Easy / 10 mines / 9x9 grid');
+    writeln('2. Intermediate / 40 mines / 16x16 grid');
+    writeln('3. Advanced / 99 mines / 16x30 grid');
+    repeat
+      readln(answer);
+    until answer in ['1'..'3'];
 
-    case key of
-      #75 : if cursorX > 1            then dec(cursorX); {Left}
-      #77 : if cursorX < BOARD_COLS  then inc(cursorX); {Right}
-      #72 : if cursorY > 1            then dec(cursorY); {Up}
-      #80 : if cursorY < BOARD_ROWS then inc(cursorY); {Down}
-      'f': playerBoard := toggleFlag(cursorX, cursorY, playerBoard, minesBoard);
-      ' ': playerBoard := activateTile(cursorX, cursorY, playerBoard, minesBoard);
+    clrScr;
+
+    case answer of
+      '1': boardStatus := startNewGame(10, 9, 9);
+      '2': boardStatus := startNewGame(40, 16, 16);
+      '3': boardStatus := startNewGame(99, 16, 30);
     end;
 
-    boardStatus := getBoardStatus(playerBoard, minesBoard);
-  until (key = #27) or (key = 'q') or (boardStatus <> playing);
+    if boardStatus = won then 
+      write('You won! ')
+    else if boardStatus = playing then
+      write('You quitted! ')
+    else
+      write('You lost! ');
 
-  gotoXY(1, BOARD_ROWS+1);
-
-  if boardStatus = win then 
-    writeln('You won!')
-  else
-    writeln('You lost!');
+    write('Start a new game? (Y/N) ');
+    repeat
+      readln(answer);
+      if ord(answer) < 100 then answer := chr(ord(answer) + 32); {Lower case}
+    until answer in ['y', 'n'];
+    clrScr;
+  until answer = 'n';
 End.
