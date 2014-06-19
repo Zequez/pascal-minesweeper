@@ -6,9 +6,9 @@ Anyway, so I had to study for a Pascal test, and after skiming over the topics I
 
 I could have used more structures, but I didn't realize until after being knee-deep into the thing. So anyway, here it is.
 
-![This is not a render, this is an actual in-game picture!](https://raw.github.com/Zequez/pascal-minesweeper/branch/screenshot.png)
+![This is not a render, this is an actual in-game picture!](/screenshot.png?raw=true)
 
-*This is not a render, this is an actual in-game picture!*
+**
 
 ### Licence
 
