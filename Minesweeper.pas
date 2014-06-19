@@ -5,7 +5,6 @@ Var
   answer: Char;
 Begin
   randomize;
-  CursorBig;
 
   repeat
     writeln('1. Easy / 10 mines / 9x9 grid');
